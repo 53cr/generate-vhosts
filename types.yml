@@ -1,0 +1,42 @@
+--- 
+standard: |
+  <VirtualHost *>
+    ServerName    #{@domain}
+    ServerAlias   www.#{@domain}
+    DocumentRoot  /srv/http#{@location}#{@domain}/htdocs
+    RewriteEngine on
+    RewriteCond   %{HTTP_HOST} ^www\\.#{@domain.gsub('.','\.')}
+    RewriteRule   (.*) http://#{@domain}$1 [R=301,L]
+    #{@custom}
+  </VirtualHost>
+
+alias: |
+  <VirtualHost *>
+    ServerName        #{@domain}
+    ServerAlias       www.#{@domain}
+    RedirectPermanent / http://#{@redirect}/
+  </VirtualHost>
+
+rails: | 
+  <VirtualHost *>
+    ServerName    #{@domain}
+    ServerAlias   www.#{@domain}
+    DocumentRoot  /srv/rails#{@location}#{@domain}/public
+    <Directory \"/srv/rails#{@location}#{@domain}/public\">
+      Options -Indexes FollowSymLinks
+      AllowOverride All
+      Order allow,deny
+      Allow from all
+    </Directory>
+    RailsEnv      #{@railsenv}
+    RewriteEngine on
+    RewriteCond   %{HTTP_HOST} ^www\\.#{@domain.gsub('.','\.')}
+    RewriteRule   (.*) http://#{@domain}$1 [R=301,L]
+    #{@custom}
+  </VirtualHost>
+
+custom: |
+  <VirtualHost *>
+    ServerName #{@domain}
+    #{@custom}
+  </VirtualHost>

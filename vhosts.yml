@@ -1,0 +1,9 @@
+--- 
+53cr.com: 
+  location: 53cr
+redmine.53cr.com: 
+  type: rails
+  railsenv: production
+chromium53.com:
+  type: alias
+  redirect: 53cr.com
